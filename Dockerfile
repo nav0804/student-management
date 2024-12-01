@@ -1,5 +1,5 @@
 # Use an official OpenJDK runtime as a parent image
-FROM openjdk:17-jdk-slim
+FROM openjdk:21-jdk-slim
 
 # Set the working directory in the container
 WORKDIR /app
@@ -21,7 +21,7 @@ COPY target target
 EXPOSE 8000
 
 # Copy the built JAR file into the container
-COPY target/student-management-0.0.1-SNAPSHOT.jar app.jar
+COPY target/student-0.0.1-SNAPSHOT.jar app.jar
 
 # Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
