@@ -18,7 +18,7 @@ COPY src src
 COPY target target
 
 # Expose the application port (assuming 8080 for Spring Boot)
-EXPOSE 8080
+EXPOSE 8000
 
 # Copy the built JAR file into the container
 COPY target/student-management-0.0.1-SNAPSHOT.jar app.jar
