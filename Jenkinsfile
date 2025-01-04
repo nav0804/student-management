@@ -1,42 +1,68 @@
-pipeline {
-    agent any
+pipeline{
+	agent any
 
-    tools {
-        // Use Maven tool configured in Jenkins (you need to set up Maven in Jenkins)
-        maven 'maven 3.9'
-    }
+	tools{
+		maven 'maven 3.9'
+	}
 
-    stages {
-        stage('checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/nav0804/student-management.git'
-            }
-        }
+	environment{
+		DOCKER_IMAGE = 'students'
+		DOCKER_TAG = "latest"
+		DOCKER_REGISTRY = 'nav010/students-library:latest'
+		DOCKER_USERNAME = credentials('nav010')
+		DOCKER_PASSWORD = credentials('!Wk5NxRi;_Vxuf@')
+	}
 
-        stage('build') {
-            steps {
-                // Run Maven build (clean and install or package)
-                sh 'mvn clean install'  // or 'mvn clean package' if you just want to build the artifact
-            }
-        }
+	stages{
+		stage('Checkout'){
+			steps{
+				git branch : 'main', url : ''https://github.com/nav0804/student-management.git''
+			}
+		}
 
-    }
+		stage('Build'){
+			steps{
+				sh 'mvn clean install'
+			}
+		}
 
-    post {
-        always {
-            cleanWs()  // Clean up workspace
-        }
+		stage('Build Docker Image'){
+			steps{
+				script{
+					sh "docker build -t ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${DOCKER_TAG} ."
+				}
+			}
+		}
 
-        success {
-            echo 'Build successful!'
-        }
+		stage('Push image'){
+			steps{
+				script{
+					sh "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} ${DOCKER_REGISTRY}"
+					sh "docker push ${DOCKER_REGISTRY}/{DOCKER_IMAGE}:${DOCKER_TAG}"
+				}
+			}
+		}
 
-        unstable {
-            echo 'Build unstable.'
-        }
 
-        failure {
-            echo 'Build failed!'
-        }
-    }
+	}
+
+	post {
+		always{
+			cleanWs()
+		}
+
+		success{
+			echo 'Build and Docker image pushed successfully'
+		}
+
+		unstable{
+			echo 'Build unstable'
+		}
+
+		failure{
+			echo 'Build failure'
+		}
+	}
+
+
 }
