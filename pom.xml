@@ -99,6 +99,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>sudent-management</finalName>
 	</build>
 
 </project>
