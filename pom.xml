@@ -99,7 +99,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<finalName>sudent-management</finalName>
+		<finalName>student-management</finalName>
 	</build>
 
 </project>
