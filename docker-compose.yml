@@ -5,14 +5,14 @@ services:
       context: . # Directory where your Dockerfile is located
     environment:
       SPRING_APPLICATION_NAME: student
-      SPRING_DATASOURCE_NAME: studentsdb
-      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/studentsdb
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/studentsdb
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: Nav@1234
     ports:
-      - "8000:8000"
+      - "8000:8080" # Map port 8000 on host to port 8080 in the app container
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   db:
     image: mysql:latest
@@ -21,4 +21,13 @@ services:
       MYSQL_ROOT_PASSWORD: Nav@1234
       MYSQL_DATABASE: studentsdb
     ports:
-      - "3306:3306"
+      - "3306:3306" # Expose MySQL on the default port
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -pNav@1234 || exit 1"]
+      interval: 10s
+      retries: 5
+
+volumes:
+  db-data: # Volume for persistent MySQL data
