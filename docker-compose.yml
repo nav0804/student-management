@@ -21,7 +21,7 @@ services:
       MYSQL_ROOT_PASSWORD: Nav@1234
       MYSQL_DATABASE: studentsdb
     ports:
-      - "3306:3306" # Expose MySQL on the default port
+      - "3307:3306" # Expose MySQL on the default port
     volumes:
       - db-data:/var/lib/mysql
     healthcheck:
